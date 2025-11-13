@@ -1,57 +1,49 @@
+// src/app.js
 require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 
-const Discoteca = require('./models/Discoteca');
-const FacturaMensual = require('./models/FacturaMensual');
-const Tarifa = require('./models/Tarifa');
-const Gasto = require('./models/Gasto');
+const ventasRoutes = require('./pages/ventas'); // ← cargamos tu módulo de ventas
 
 const app = express();
 app.use(express.json());
-app.use(cors()); // si necesitas limitar orígenes, cámbialo aquí
+app.use(cors());
 
-const MONGO = process.env.MONGO_URI || 'mongodb://localhost:27017/erp_demo';
-const PORT = process.env.PORT || 3000;
+const MONGO = process.env.MONGO_URI;
+const PORT = process.env.PORT;
 
-mongoose.connect(MONGO, { useNewUrlParser: true, useUnifiedTopology: true })
-  .then(() => console.log('Mongo conectado'))
-  .catch(err => { console.error('Error Mongo:', err); process.exit(1); });
+mongoose.connect(MONGO)
+  .then(() => console.log("Mongo conectado"))
+  .catch(err => console.log("Error Mongo:", err));
 
-// RUTAS GET públicas básicas
-app.get('/api/discotecas', async (req, res) => {
-  const docs = await Discoteca.find().lean();
-  res.json(docs);
+// ------- USAR TU ARCHIVO DE VENTAS COMO RUTA -------
+app.use('/api', ventasRoutes);
+// Esto significa:
+// GET /api/discotecas
+// GET /api/facturasMensuales
+// GET /api/tarifas
+// GET /api/gastos
+
+app.get('/', (req, res) => {
+  res.send('API del ERP funcionando');
 });
 
-app.get('/api/facturasMensuales', async (req, res) => {
-  const docs = await FacturaMensual.find().lean();
-  res.json(docs);
-});
+app.listen(PORT, () => console.log(`Servidor API en http://localhost:${PORT}`));
 
-app.get('/api/tarifas', async (req, res) => {
-  const docs = await Tarifa.find().lean();
-  res.json(docs);
-});
-
-app.get('/api/gastos', async (req, res) => {
-  const docs = await Gasto.find().lean();
-  res.json(docs);
-});
-
-// Endpoint detalle discoteca con relaciones
-app.get('/api/discotecas/:id', async (req, res) => {
+app.get('/api/debug', async (req, res) => {
   try {
-    const disc = await Discoteca.findById(req.params.id).lean();
-    if (!disc) return res.status(404).json({ error: 'No encontrado' });
-    const tarifas = await Tarifa.find({ local_id: disc._id }).lean();
-    const gastos = await Gasto.find({ local_id: disc._id }).lean();
-    const facturas = await FacturaMensual.find({ local_id: disc._id }).lean();
-    res.json({ ...disc, tarifas, gastos, facturas });
+    const db = mongoose.connection.db;
+    const dbName = db.databaseName;
+    const collections = await db.listCollections().toArray();
+    const names = collections.map(c => c.name);
+    const counts = {};
+    for (const n of names) {
+      counts[n] = await db.collection(n).countDocuments();
+    }
+    res.json({ dbName, collections: names, counts });
   } catch (err) {
     res.status(500).json({ error: String(err) });
   }
 });
 
-app.listen(PORT, () => console.log(`API escuchando en http://localhost:${PORT}`));
