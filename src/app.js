@@ -1,10 +1,10 @@
-// src/app.js
 require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
 
-const ventasRoutes = require('./pages/ventas'); // ← cargamos tu módulo de ventas
+const ventasRoutes = require('./pages/ventas'); 
+const usuariosRoutes = require('./pages/usuarios');
 
 const app = express();
 app.use(express.json());
@@ -17,13 +17,8 @@ mongoose.connect(MONGO)
   .then(() => console.log("Mongo conectado"))
   .catch(err => console.log("Error Mongo:", err));
 
-// ------- USAR TU ARCHIVO DE VENTAS COMO RUTA -------
 app.use('/api', ventasRoutes);
-// Esto significa:
-// GET /api/discotecas
-// GET /api/facturasMensuales
-// GET /api/tarifas
-// GET /api/gastos
+app.use('/api', usuariosRoutes);
 
 app.get('/', (req, res) => {
   res.send('API del ERP funcionando');
@@ -46,4 +41,3 @@ app.get('/api/debug', async (req, res) => {
     res.status(500).json({ error: String(err) });
   }
 });
-
