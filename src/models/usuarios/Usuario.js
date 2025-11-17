@@ -7,6 +7,6 @@ const UsuarioSchema = new mongoose.Schema({
   telefono: String,
   DNI: String,
   foto: String
-}, { collection: 'Usuarios' });  // <-- Notar la U mayúscula
+}, { collection: 'Usuarios' }); 
 
 module.exports = mongoose.model('Usuario', UsuarioSchema);
