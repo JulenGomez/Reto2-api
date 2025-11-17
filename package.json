@@ -24,14 +24,9 @@
     "cors": "^2.8.5",
     "dotenv": "^17.2.3",
     "express": "^5.1.0",
-<<<<<<< Updated upstream
-    "mongoose": "^8.19.3",
-=======
     "mongoose": "^8.19.4"
   },
   "devDependencies": {
->>>>>>> Stashed changes
-    "nodemon": "^3.1.10"
-  },
-  "devDependencies": {}
+    "nodemon": "^3.1.11"
+  }
 }
