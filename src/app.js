@@ -5,7 +5,9 @@ const cors = require('cors');
 
 const ventasRoutes = require('./pages/ventas'); 
 const usuariosRoutes = require('./pages/usuarios');
-const clientesRoutes = require('./pages/clientes')
+const clientesRoutes = require('./pages/clientes');
+const estadisticasRoutes = require('./pages/estadisticas');
+
 
 const app = express();
 app.use(express.json());
@@ -21,6 +23,8 @@ mongoose.connect(MONGO)
 app.use('/api', ventasRoutes);
 app.use('/api', usuariosRoutes);
 app.use('/api', clientesRoutes);
+app.use('/api', estadisticasRoutes);
+
 
 app.get('/', (req, res) => {
   res.send('API del ERP funcionando');
