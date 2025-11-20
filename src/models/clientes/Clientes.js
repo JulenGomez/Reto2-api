@@ -1,4 +1,4 @@
-// src/models/discotecas/Discoteca.js
+// src/models/clientes/Clientes.js
 const mongoose = require('mongoose');
 
 const DiscotecaSchema = new mongoose.Schema(
@@ -7,32 +7,33 @@ const DiscotecaSchema = new mongoose.Schema(
     nombre: { type: String, required: true },
     nombreCorto: { type: String },
 
+    // Dirección como subdocumento
     direccion: {
-      calle: String,
-      ciudad: String,
-      provincia: String,
-      codigoPostal: String,
-      pais: String
+      calle: { type: String, default: "" },
+      ciudad: { type: String, default: "" },
+      provincia: { type: String, default: "" },
+      codigoPostal: { type: String, default: "" },
+      pais: { type: String, default: "" },
     },
 
-    telefono: String,
-    email: String,
-    web: String,
-    imagen: String,
+    telefono: { type: String, default: "" },
+    email: { type: String, default: "" },
+    web: { type: String, default: "" },
+    imagen: { type: String, default: "" },
 
-    encargado: String,
-    notas: String,
+    encargado: { type: String, default: "" },
+    notas: { type: String, default: "" },
 
     creadoEn: { type: Date, default: Date.now },
 
+    // Metadatos como subdocumento opcional
     metadatos: {
-      horarioApertura: String,
-      capacidad: Number,
-      tags: [String]
-    }
+      horarioApertura: { type: String, default: "" },
+      capacidad: { type: Number, default: 0 },
+      tags: { type: [String], default: [] },
+    },
   },
   { collection: 'Discotecas' }
 );
 
 module.exports = mongoose.models.Discoteca || mongoose.model('Discoteca', DiscotecaSchema);
-
