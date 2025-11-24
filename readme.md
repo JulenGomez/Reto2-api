@@ -115,7 +115,7 @@ Elimina un plan por ID.
 
 ---
 
-# ⚙️ Configuración del proyecto
+# Configuración del proyecto
 
 ### **Instalar dependencias**
 ```bash
